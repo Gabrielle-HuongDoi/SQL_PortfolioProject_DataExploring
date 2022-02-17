@@ -1,12 +1,13 @@
 ######################################################################
-### THE RELATIONSHIP BETWEEN TEST COMPLETION AND TEST CIRCUMSTANCES
+-- THE RELATIONSHIP BETWEEN TEST COMPLETION AND TEST CIRCUMSTANCES
 ######################################################################
-# Skills: Joins, CTE's, Aggregate Functions, Window Function, Logical Functions, Subqueries
+-- Skills: Joins, CTE's, Aggregate Functions, Window Function, Logical Functions, Subqueries
 
 ################################################################
-### 1. ON WHICH DAY THE DOGNITION USERS CONDUCT THE MOST TESTS
+-- 1. ON WHICH DAY THE DOGNITION USERS CONDUCT THE MOST TESTS
 
 # NUMBER OF COMPLETED TEST EVERY DAY
+
 SELECT  
     CASE dayofweek(Created_at)
     WHEN 1 THEN 'Sunday'
@@ -24,6 +25,7 @@ ORDER BY NumTest desc;
 
 # IF THE EXLCLUDE FLAGS IN USERS AND DOGS TABLE EQUAL 1, HOW THE RESULTS CHANGE?
 # REMIND THAT EXCLUDE VALUE OF '1' MEANS THAT THE ENTRIES IS EXCLUDED DUE TO THE FACTORS MONITORED BY THE DOGNITION TEAM
+
 SELECT  
     CASE dayofweek(c.Created_at)
     WHEN 1 THEN 'Sunday'
@@ -44,6 +46,7 @@ GROUP BY Weekday
 ORDER BY NumTest DESC;
 
 # NOW BREAK DOWN THE NUMBER OF COMPLETED TEST INTO EACH YEAR TO OBSERVE THE TREND.
+
 SELECT  YEAR(c.Created_at) as Year,
     CASE dayofweek(c.Created_at)
     WHEN 1 THEN 'Sunday'
@@ -65,9 +68,10 @@ ORDER BY Year, NumTest DESC;
 
 
 ################################################################
-### 2. WHICH COUNTRIES AND STATES HAVE THE MOST DOGNITION USERS
+-- 2. WHICH COUNTRIES AND STATES HAVE THE MOST DOGNITION USERS
 
 # TOP 10 COUNTRIES HAVE THE MOST USERS
+
 SELECT new_dogs.Country AS Country, COUNT(DISTINCT new_dogs.UserID) AS NumUsers
 FROM complete_tests c 
 JOIN (SELECT DISTINCT DogID, u.UserID, u.Country
@@ -81,6 +85,7 @@ LIMIT 10;
 
 
 # FOCUS ON THE UNITED STATES, TOP 10 STATES HAVE THE MOST USERS WITH THEIR RANKING AND THEIR PERCENTAGES
+
 WITH US_Users(Country, State, NumUsers)
 AS (SELECT new_dogs.Country, new_dogs.State AS State, COUNT(DISTINCT new_dogs.UserID) AS NumUsers
 	FROM complete_tests c 
@@ -100,6 +105,7 @@ LIMIT 10;
 # BECAUSE OF THE DIFFERENT TIME ZONES, THE WEEKDAYS EXTRACTED BEFORE MAY NOT ACCURATELY REFLECTED THE WEEKENDS IN THE LOCAL TIME.
 # CONTINUE FOCUSING ON THE US USERS, ADJUST THE TIME ZONES BY SUBTRACTING 6 HOURS, ON THE WHICH DAYS THE USERS COMPLETE THE MOST TESTS.
 # (EXCLUDE HAWAII (HI) AND ALASKA (AK))
+
 SELECT  YEAR(c.Created_at) as Year,
     CASE dayofweek(DATE_SUB(c.Created_at, INTERVAL 6 HOUR))
     WHEN 1 THEN 'Sunday'
